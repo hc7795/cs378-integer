@@ -5,7 +5,7 @@
 // --------------------------
 
 #ifndef Integer_h
-#define Integer_h
+#define Integer_h   
 
 // --------
 // includes
@@ -16,7 +16,8 @@
 #include <stdexcept> // invalid_argument
 #include <string>    // string
 #include <vector>    // vector
-#include <math.h>
+#include <math.h> 
+#include <algorithm> 
 
 using namespace std;
 // -----------------
@@ -165,7 +166,7 @@ OI plus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
  * @param b  an iterator to the beginning of an input  sequence (inclusive)
  * @param e  an iterator to the end       of an input  sequence (exclusive)
  * @param b2 an iterator to the beginning of an input  sequence (inclusive)
- * @param e2 an ithttp://en.wikipedia.org/wiki/Long_divisionerator to the end       of an input  sequence (exclusive)
+ * @param e2 an iterator to the end       of an input  sequence (exclusive)
  * @param x  an iterator to the beginning of an output sequence (inclusive)
  * @return   an iterator to the end       of an output sequence (exclusive)
  * the sequences are of decimal digits
@@ -318,16 +319,6 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
  * output the division of the two input sequences into the output sequence
  * ([b1, e1) / [b2, e2)) => x
  */
-/*
- void test_divides_digits () {
- const int a[] = {1, 3, 2, 6, 7, 8};
- const int b[] = {5, 6, 7};
- const int c[] = {2, 3, 4};
- int x[10];
- const int* p = divides_digits(a, a + 6, b, b + 3, x);
- CPPUNIT_ASSERT(p - x == 3);
- CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
- */
 template <typename II1, typename II2, typename OI>
 OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     
@@ -387,9 +378,9 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
             ++count;
             quotient.push_back(count);
             go = false;}
-        else { 
+        else {
             first = false;
-            ++count; 
+            ++count;
             resultLen = (p - resultb);
         }
     }
@@ -431,13 +422,21 @@ class Integer {
     // -----------
     // operator ==
     // -----------
-
+    
     /**
      * <your documentation>
      */
     friend bool operator == (const Integer& lhs, const Integer& rhs) {
-	C vec = 
-        return false;}
+        if(lhs.sign != rhs.sign) 
+            return false;
+        if(lhs.vec.size() != rhs.vec.size()) 
+            return false;
+        for(unsigned int i = 0; i<lhs.vec.size(); i++) {
+            if(lhs.vec[i] != rhs.vec[i]) {
+                return false;
+	    }
+        }
+        return true;}
     
     // -----------
     // operator !=
@@ -458,7 +457,32 @@ class Integer {
      */
     friend bool operator < (const Integer& lhs, const Integer& rhs) {
         // <your code>
-        return false;}
+        if(lhs.sign == true && rhs.sign == false)
+            return false;
+        else if(lhs.sign ==false && rhs.sign == true)
+            return true;
+        else if(!lhs.sign  && !rhs.sign) {
+            if(lhs.vec.size() < rhs.vec.size())
+                return false;
+            else if(lhs.vec.size()==rhs.vec.size()) {
+                for(unsigned int i =0; i<lhs.vec.size(); i++) {
+                    if(lhs[i] < rhs[i])
+                        return false;
+                }
+            }
+        }
+        else{
+            if(lhs.vec.size()< rhs.vec.size())
+                return true;
+            else if(lhs.vec.size()==rhs.vec.size()) {
+                for(unsigned int i =0; i<lhs.vec.size(); i++) {
+                    if(lhs[i] < rhs[i])
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
     
     // -----------
     // operator <=
@@ -573,229 +597,295 @@ class Integer {
          */
         friend std::ostream& operator << (std::ostream& lhs, const Integer& rhs) {
             // <your code>
-            return lhs << "0";}
-            
-            // ---
-            // abs
-            // ---
-            
-            /**
-             * absolute value
-             * does NOT modify the argument
-             * <your documentation>
-             */
-            friend Integer abs (Integer x) {
-                return x.abs();}
-            
-            // ---
-            // pow
-            // ---
-            
-            /**
-             * power
-             * does NOT modify the argument
-             * <your documentation>
-             * @throws invalid_argument if (x == 0) && (e == 0)
-             * @throws invalid_argument if (e < 0)
-             */
-            friend Integer pow (Integer x, int e) {
-                return x.pow(e);}
-            
-        private:
-            // ----
-            // data
-            // ----
-            
-            // <your data>
-            
-        private:
-            // -----
-            // valid
-            // -----
-            
-            bool valid () const {
-                // <your code>
-                return true;}
-            
-        public:
-            // ------------
-            // constructors
-            // ------------
-            
-            /**
-             * <your documentation>
-             */
-            Integer (int value) {
-                // <your code>
-                assert(valid());}
-            
-            /**
-             * <your documentation>
-             * @throws invalid_argument if value is not a valid representation of an Integer
-             */
-            explicit Integer (const std::string& value) {
-                // <your code>
-                if (!valid())
-                    throw std::invalid_argument("Integer::Integer()");}
-            
-            // Default copy, destructor, and copy assignment.
-            // Integer (const Integer&);
-            // ~Integer ();
-            // Integer& operator = (const Integer&);
-            
-            // ----------
-            // operator -
-            // ----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer operator - () const {
-                // <your code>
-                return Integer(0);}
-            
-            // -----------
-            // operator ++
-            // -----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator ++ () {
-                *this += 1;
-                return *this;}
-            
-            /**
-             * <your documentation>
-             */
-            Integer operator ++ (int) {
-                Integer x = *this;
-                ++(*this);
-                return x;}
-            
-            // -----------
-            // operator --
-            // -----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator -- () {
-                *this -= 1;
-                return *this;}
-            
-            /**
-             * <your documentation>
-             */
-            Integer operator -- (int) {
-                Integer x = *this;
-                --(*this);
-                return x;}
-            
-            // -----------
-            // operator +=
-            // -----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator += (const Integer& rhs) {
-                // <your code>
-                return *this;}
-            
-            // -----------
-            // operator -=
-            // -----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator -= (const Integer& rhs) {
-                // <your code>
-                return *this;}
-            
-            // -----------
-            // operator *=
-            // -----------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator *= (const Integer& rhs) {
-                // <your code>
-                return *this;}
-            
-            // -----------
-            // operator /=
-            // -----------
-            
-            /**
-             * <your documentation>
-             * @throws invalid_argument if (rhs == 0)
-             */
-            Integer& operator /= (const Integer& rhs) {
-                // <your code>
-                return *this;}
-            
-            // -----------
-            // operator %=
-            // -----------
-            
-            /**
-             * <your documentation>
-             * @throws invalid_argument if (rhs <= 0)
-             */
-            Integer& operator %= (const Integer& rhs) {
-                // <your code>
-                return *this;}
-            
-            // ------------
-            // operator <<=
-            // ------------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator <<= (int n) {
-                // <your code>
-                return *this;}
-            
-            // ------------
-            // operator >>=
-            // ------------
-            
-            /**
-             * <your documentation>
-             */
-            Integer& operator >>= (int n) {
-                // <your code>
-                return *this;}
-            
-            // ---
-            // abs
-            // ---
-            
-            /**
-             * absolute value
-             * <your documentation>
-             */
-            Integer& abs () {
-                // <your code>
-                return *this;}
-            
-            // ---
-            // pow
-            // ---
-            
-            /**
-             * power
-             * <your documentation>
-             * @throws invalid_argument if (this == 0) && (e == 0)
-             * @throws invalid_argument if (e < 0)
-             */
-            Integer& pow (int e) {
-                // <your code>
-                return *this;}};
-            
-#endif // Integer_h
+                for(unsigned int i = 0; i<rhs.vec.size(); i++) {
+                    lhs << rhs.vec[i];
+                }
+                return lhs;}
+                
+                // ---
+                // abs
+                // ---
+                
+                /**
+                 * absolute value
+                 * does NOT modify the argument
+                 * <your documentation>
+                 */
+                friend Integer abs (Integer x) {
+                    return x.abs();}
+                
+                // ---
+                // pow
+                // ---
+                
+                /**
+                 * power
+                 * does NOT modify the argument
+                 * <your documentation>
+                 * @throws invalid_argument if (x == 0) && (e == 0)
+                 * @throws invalid_argument if (e < 0)
+                 */
+                friend Integer pow (Integer x, int e) {
+                    return x.pow(e);}
+                
+            private:
+                // ----
+                // data
+                // ----
+                C vec;
+                bool sign; //true means >0 and false means <0
+                // <your data>
+                
+            private:
+                // -----
+                // valid
+                // -----
+                
+                bool valid () const { /*
+                    if(vec.size() == 0) {
+                        cout<<"vec.size() == 0" << endl;
+                        return false;
+                    }*/
+                    for(unsigned int i = 0; i < vec.size(); i++) {
+                        if(vec[i]<0 || vec[i]>9 ){
+                            return false;}
+                    }
+                    return true;}
+                
+            public:
+                // ------------
+                // constructors
+                // ------------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer (int value) {
+                    if(value < 0) {
+                        sign = false;
+			value *= -1;
+		    }
+                    else
+                        sign = true;
+          
+		    assert(value>=0);
+                    int length = log10(value);
+                    for(int i = length; i >= 0; i--) {
+                        int divisor = powerHelper(10, i);
+                        int digit = value/divisor;
+			cout << "digit = " << digit << endl;
+                        vec.push_back(digit);
+                        value -= digit * divisor;
+                    }
+                    assert(valid());}
+                
+                int powerHelper(int a, int b) {
+		    if(b == 0)
+			return 1;
+                    int c=a;
+                    for (int n=b; n>1; n--) c*=a;
+                    return c;
+                }
 
+                
+                /**
+                 * <your documentation>
+                 * @throws invalid_argument if value is not a valid representation of an Integer
+                 */
+                explicit Integer (const std::string& value) {
+                    for(unsigned int i = 0 ; i < value.length(); i++) {
+                        int num = value[i] - '0';
+                        vec.push_back(num);
+                    }
+                    if (!valid())
+                        throw std::invalid_argument("Integer::Integer()");}
+                
+                // Default copy, destructor, and copy assignment.
+                // Integer (const Integer&);
+                // ~Integer ();
+                // Integer& operator = (const Integer&);
+                
+                // ----------
+                // operator -
+                // ----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer operator - () const {
+                    Integer x = *this;
+                    x.sign = !x.sign;
+                    return x;}
+                
+                // -----------
+                // operator ++
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator ++ () {
+                    *this += 1;
+                    return *this;}
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer operator ++ (int) {
+                    Integer x = *this;
+                    ++(*this);
+                    return x;}
+                
+                // -----------
+                // operator --
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator -- () {
+                    *this -= 1;
+                    return *this;}
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer operator -- (int) {
+                    Integer x = *this;
+                    --(*this);
+                    return x;}
+                
+                // -----------
+                // operator +=
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator += (const Integer& rhs) {
+                    C result;
+                    plus_digits (rhs.vec.begin(), rhs.vec.end(), vec.begin(), vec.end(), result.begin());
+                    vec = result;
+                    return *this;}
+                
+                // -----------
+                // operator -=
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator -= (const Integer& rhs) {
+                    C result;
+                    minus_digits (vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+                    vec = result;
+                    return *this;}
+                
+                // -----------
+                // operator *=
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator *= (const Integer& rhs) {
+                    C result;
+		    multiplies_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+		    vec = result;
+                    return *this;}
+                
+                // -----------
+                // operator /=
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 * @throws invalid_argument if (rhs == 0)
+                 */
+                Integer& operator /= (const Integer& rhs) {
+		    if (!valid())
+                        throw std::invalid_argument("Integer& operator /= invalid argument");
+		    divides_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), vec.begin());
+                    return *this;}
+                
+                // -----------
+                // operator %=
+                // -----------
+                
+                /**
+                 * <your documentation>
+                 * @throws invalid_argument if (rhs <= 0)
+                 */
+                Integer& operator %= (const Integer& rhs) {
+		    if (!valid())
+                        throw std::invalid_argument("Integer& operator %= invalid argument");
+		    C result;
+                    divides_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+		    multiplies_digits(result.begin(), result.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+		    minus_digits (vec.begin(), vec.end(), result.begin(), result.end(), vec.begin());
+                    return *this;}
+                
+                // ------------
+                // operator <<=
+                // ------------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator <<= (int n) {
+                    shift_left_digits (vec.begin(), vec.end(), n, vec.begin());
+                    return *this;}
+                
+                // ------------
+                // operator >>=
+                // ------------
+                
+                /**
+                 * <your documentation>
+                 */
+                Integer& operator >>= (int n) {
+                    right_left_digits (vec.begin(), vec.end(), n, vec.begin());
+                    return *this;}
+                
+                // ---
+                // abs
+                // ---
+                
+                /**
+                 * absolute value
+                 * <your documentation>
+                 */
+                Integer& abs () {
+                    sign = true;
+                    return *this;}
+                
+                // ---
+                // pow
+                // ---
+                
+                /**
+                 * power
+                 * <your documentation>
+                 * @throws invalid_argument if (this == 0) && (e == 0)
+                 * @throws invalid_argument if (e < 0)
+                 */
+                Integer& pow (int e) {
+                    if (!valid())
+                        throw std::invalid_argument("Integer& operator pow invalid argument");
+		    
+                    return *this;}};
+
+
+		    /*
+  		    C vecCopy;			   
+		    while(vec.begin() != vec.end()) {
+			vecCopy.push_back(*vec.begin());
+			++vec.begin();	
+		    }
+		    while(e) {
+			multiplies_digits(vec.begin(), vec.end(), vecCopy.begin(), vecCopy.end(), vec.begin());
+			--e;
+		    }
+                */
+#endif // Integer_h
+            
