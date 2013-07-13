@@ -1,0 +1,29 @@
+commit 970076d2cb60922c181629d20cdbb35b8e5e69e0
+Author: HONGHUI CHOI <hc7795@cs.utexas.edu>
+Date:   Thu Jul 11 18:39:28 2013 -0500
+
+    Integer.h updated
+
+commit 9fa564e9543c2ba09fb8d48305a0325ada028d3b
+Author: HONGHUI CHOI <hc7795@cs.utexas.edu>
+Date:   Tue Jul 9 23:29:32 2013 -0500
+
+    division finished
+
+commit d8fac9cc0d2c01b96acd065fe2935064c9e1664b
+Author: Aashish Sheshadri <aashish.sheshadri@gmail.com>
+Date:   Thu Jul 4 11:37:44 2013 -0500
+
+    adding gitignore
+
+commit 7dc98dabe581e8693d6d6ac39e5c853f1ada3832
+Author: Aashish Sheshadri <aashish.sheshadri@gmail.com>
+Date:   Thu Jul 4 11:35:17 2013 -0500
+
+    Adding files
+
+commit 0898134e01cc763b684305abcb1f1d4cdc7fdc7c
+Author: HONGHUI CHOI <hc7795@cs.utexas.edu>
+Date:   Wed Jul 3 14:04:43 2013 -0500
+
+    left-shift, right-shift, plus done
