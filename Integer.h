@@ -281,11 +281,10 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 				temp = temp % 10;}
 			else
 				carry = 0;
-            
 			temp  = temp + vec3[vec3Len-j-count] + carry2;
 			if (temp >= 10) {
 				carry2 = temp/10;
-				temp -= 10; }
+				temp %= 10; }
 			else
 				carry2 = 0;
 			vec3[vec3Len-j-count] = temp;
@@ -293,13 +292,26 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 		}
 		if(carry) {
 			temp = carry;
-			vec3[vec3Len-j-count] = temp; }
+            if(temp > 9) {
+                int temp2 = temp/10;
+                temp %= 10;
+                vec3[vec3Len-j-count] = temp;
+                vec3[vec3Len-j-count-1] = temp2;
+            }
+            else
+			    vec3[vec3Len-j-count] = temp; }
 		++count;
 	}
-	
+	bool first = true;
 	for (vector<int>::iterator it = vec3.begin() ; it != vec3.end(); ++it) {
-		*x = *it;
-		++x;
+        if(first && *it == 0) {
+            first = false;
+        }
+        else {
+		   *x = *it;
+           ++x;
+        }
+        first = false;
 	}
 	
     return x;}
@@ -663,31 +675,27 @@ class Integer {
                 Integer (int value) {
                     if(value < 0) {
                         sign = false;
-			value *= -1;
-		    }
+                        value *= -1;
+                    }
                     else
                         sign = true;
-          
-		    assert(value>=0);
-                    int length = log10(value);
-                    for(int i = length; i >= 0; i--) {
-                        int divisor = powerHelper(10, i);
-                        int digit = value/divisor;
-			cout << "digit = " << digit << endl;
-                        vec.push_back(digit);
-                        value -= digit * divisor;
+                    assert(value>=0);
+                    int vecSize = log10(value) + 1;
+                    while(vecSize) {
+                        int digit = value%10;
+                        vec.insert(vec.begin(), digit);
+                        value/=10;
+                        --vecSize;
                     }
                     assert(valid());}
-                
-                int powerHelper(int a, int b) {
-		    if(b == 0)
-			return 1;
-                    int c=a;
-                    for (int n=b; n>1; n--) c*=a;
-                    return c;
-                }
 
-                
+                int powerHelper(int a, int b) {
+                        if(b == 0)
+                            return 1;
+                        int c=a;
+                        for (int n=b; n>1; n--) c*=a;
+                        return c;
+                }
                 /**
                  * <your documentation>
                  * @throws invalid_argument if value is not a valid representation of an Integer
@@ -764,7 +772,7 @@ class Integer {
                  */
                 Integer& operator += (const Integer& rhs) {
                     C result;
-                    plus_digits (rhs.vec.begin(), rhs.vec.end(), vec.begin(), vec.end(), result.begin());
+                    plus_digits(rhs.vec.begin(), rhs.vec.end(), vec.begin(), vec.end(), result.begin());
                     vec = result;
                     return *this;}
                 
@@ -790,8 +798,8 @@ class Integer {
                  */
                 Integer& operator *= (const Integer& rhs) {
                     C result;
-		    multiplies_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
-		    vec = result;
+                    multiplies_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+                    vec = result;
                     return *this;}
                 
                 // -----------
@@ -803,9 +811,9 @@ class Integer {
                  * @throws invalid_argument if (rhs == 0)
                  */
                 Integer& operator /= (const Integer& rhs) {
-		    if (!valid())
+                    if (!valid())
                         throw std::invalid_argument("Integer& operator /= invalid argument");
-		    divides_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), vec.begin());
+                    divides_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), vec.begin());
                     return *this;}
                 
                 // -----------
@@ -817,12 +825,12 @@ class Integer {
                  * @throws invalid_argument if (rhs <= 0)
                  */
                 Integer& operator %= (const Integer& rhs) {
-		    if (!valid())
+                    if (!valid())
                         throw std::invalid_argument("Integer& operator %= invalid argument");
-		    C result;
+                    C result;
                     divides_digits(vec.begin(), vec.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
-		    multiplies_digits(result.begin(), result.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
-		    minus_digits (vec.begin(), vec.end(), result.begin(), result.end(), vec.begin());
+                    multiplies_digits(result.begin(), result.end(), rhs.vec.begin(), rhs.vec.end(), result.begin());
+                    minus_digits (vec.begin(), vec.end(), result.begin(), result.end(), vec.begin());
                     return *this;}
                 
                 // ------------
@@ -869,23 +877,43 @@ class Integer {
                  * @throws invalid_argument if (this == 0) && (e == 0)
                  * @throws invalid_argument if (e < 0)
                  */
-                Integer& pow (int e) {
-                    if (!valid())
-                        throw std::invalid_argument("Integer& operator pow invalid argument");
-		    
-                    return *this;}};
+                    Integer& pow (int e) {
+                        if (!valid())
+                            throw std::invalid_argument("Integer& operator /= invalid argument");
+                        if(e == 0) {
+                            return *this;
+                        }
+                        int vecInt = 0;
+                        int vecLen = vec.size()-1;
+                        for(int i=0; i<=vecLen; i++) {
+                            vecInt += vec[i] * powerHelper(10, vecLen-i);
+                        }
+                        int result = 1;
+                        while(e) {
+                            result *= vecInt;
+                            --e;
+                        }
+                        while (!vec.empty()) {
+                            vec.pop_back();
+                        }
+                        int resultLen = log10(result);
+                        for(int i = resultLen; i >= 0; i--) {
+                            int divisor = powerHelper(10, i);
+                            int digit = result/divisor;
+                            vec.push_back(digit);
+                            result -= digit * divisor;
+                        }
+                        return *this;
+                    }
+};
 
-
-		    /*
-  		    C vecCopy;			   
-		    while(vec.begin() != vec.end()) {
-			vecCopy.push_back(*vec.begin());
-			++vec.begin();	
-		    }
-		    while(e) {
-			multiplies_digits(vec.begin(), vec.end(), vecCopy.begin(), vecCopy.end(), vec.begin());
-			--e;
-		    }
-                */
 #endif // Integer_h
             
+
+
+
+
+
+
+
+
