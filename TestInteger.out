@@ -1,8 +1,45 @@
 TestInteger.c++
-..................................
+..............F...F.F.F.F.F.F
 
 
-OK (34 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  22   Failures: 7   Errors: 0
+
+
+1) test: TestInteger::test_constructor_1 (F) line: 182 TestInteger.c++
+assertion failed
+- Expression: false
+
+
+2) test: TestInteger::test_abs_1 (F) line: 206 TestInteger.c++
+assertion failed
+- Expression: x == 98765
+
+
+3) test: TestInteger::test_abs_2 (F) line: 215 TestInteger.c++
+assertion failed
+- Expression: x == -98765
+
+
+4) test: TestInteger::test_negation (F) line: 245 TestInteger.c++
+assertion failed
+- Expression: y == -98765
+
+
+5) test: TestInteger::test_output (F) line: 258 TestInteger.c++
+assertion failed
+- Expression: out.str() == "98765"
+
+
+6) test: TestInteger::test_pow_1 (F) line: 272 TestInteger.c++
+assertion failed
+- Expression: x == 0
+
+
+7) test: TestInteger::test_pow_2 (F) line: 282 TestInteger.c++
+assertion failed
+- Expression: x == 98765
 
 
 Done.

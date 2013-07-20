@@ -28,35 +28,44 @@ To document the program:
 
 #include <iostream> // cout, endl
 #include <deque>    // deque
-#include <cassert>   // assert
-#include <iostream>  // ostream
-#include <stdexcept> // invalid_argument
-#include <string>    // string
-#include <vector>    // vector
-#include <math.h> 
-#include <algorithm> 
-
 
 #include "Integer.h"
-#include <time.h>
+
 // ----
 // main
 // ----
 
 int main () {
     using namespace std;
-    clock_t t1;
     cout << "RunInteger.c++" << endl << endl;
 
     // less than 300 ms without valgrind
     // less than  15  s with    valgrind
     cout << "*** 20th Mersenne prime: 1,332 digits ***" << endl << endl;
-    t1 = clock();
+
     {
-    const Integer<int> n = Integer<int>(2).pow(4423)-1;
+    const Integer<int> n = Integer<int>(2).pow(4423) - 1;
     cout << "2^4423 - 1 = " << n << endl << endl;
     }
-    t1 = clock() - t1;
-    cout<<"Time For 20th Mersenne using Vector =  " << ((float)t1)/CLOCKS_PER_SEC << " seconds "<<endl;
-    cout<<endl;
+
+    {
+    const Integer< int, std::deque<int> > n = Integer< int, std::deque<int> >(2).pow(4423) - 1;
+    cout << "2^4423 - 1 = " << n << endl << endl;
+    }
+
+    // --------------------------
+    // extra credit (5 bonus pts)
+    // --------------------------
+
+    // less than 4 min without valgrind
+    // don't run with valgrind
+    cout << "*** 30th Mersenne prime: 39,751 digits ***" << endl << endl;
+
+    {
+    const Integer<int> n = Integer<int>(2).pow(132049) - 1;
+    cout << "2^132049 - 1 = " << n << endl << endl;
+    }
+
+    cout << "Done." << endl;
+
     return 0;}
